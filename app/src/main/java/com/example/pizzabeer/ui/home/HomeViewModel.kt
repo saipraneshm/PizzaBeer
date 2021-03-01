@@ -1,4 +1,4 @@
-package com.example.pizzabeer
+package com.example.pizzabeer.ui.home
 
 import androidx.lifecycle.ViewModel
 import com.example.pizzabeer.domain.model.BusinessFilter

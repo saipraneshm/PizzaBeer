@@ -1,4 +1,4 @@
-package com.example.pizzabeer.domain
+package com.example.pizzabeer.domain.repository
 
 import com.example.pizzabeer.domain.model.BusinessFilter
 import com.example.pizzabeer.domain.model.BusinessesSearch

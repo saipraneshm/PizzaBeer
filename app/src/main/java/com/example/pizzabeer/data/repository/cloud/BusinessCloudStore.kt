@@ -1,4 +1,4 @@
-package com.example.pizzabeer.data.cloud
+package com.example.pizzabeer.data.repository.cloud
 
 import com.example.pizzabeer.data.services.BusinessService
 import com.example.pizzabeer.domain.model.BusinessFilter

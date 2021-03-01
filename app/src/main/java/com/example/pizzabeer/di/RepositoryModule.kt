@@ -1,7 +1,7 @@
 package com.example.pizzabeer.di
 
-import com.example.pizzabeer.data.BusinessRepositoryImpl
-import com.example.pizzabeer.domain.BusinessRepository
+import com.example.pizzabeer.data.repository.BusinessRepositoryImpl
+import com.example.pizzabeer.domain.repository.BusinessRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
