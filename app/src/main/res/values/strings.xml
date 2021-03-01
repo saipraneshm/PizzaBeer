@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PizzaBeer</string>
+    <string name="showing_businesses_near"><b>Showing businesses near</b> \n %s</string>
 </resources>
