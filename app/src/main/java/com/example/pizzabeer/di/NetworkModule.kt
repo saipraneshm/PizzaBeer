@@ -11,6 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 /**
  * Responsible for providing networking (retrofit) dependencies
@@ -19,8 +20,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 object NetworkModule {
 
+    @Singleton
     @Provides
-    fun providesInterceptors(dataConfig: DataConfig): List<Interceptor> {
+    fun providesOkHttpClient(dataConfig: DataConfig): OkHttpClient {
         val logger = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
         // Adding a headerInterceptor which takes care of adding the authorization header.
         val headerInterceptor = Interceptor { chain ->
@@ -32,23 +34,13 @@ object NetworkModule {
             chain.proceed(authorizedRequest.build())
         }
 
-        return mutableListOf<Interceptor>().apply {
-            add(logger)
-            add(headerInterceptor)
-        }
+        return OkHttpClient.Builder()
+            .addInterceptor(logger)
+            .addInterceptor(headerInterceptor)
+            .build()
     }
 
-    @Provides
-    fun providesOkHttpClient(interceptors: List<Interceptor>): OkHttpClient {
-        val okHttpClientBuilder = OkHttpClient.Builder()
-
-        for (interceptor in interceptors) {
-            okHttpClientBuilder.addInterceptor(interceptor)
-        }
-
-        return okHttpClientBuilder.build()
-    }
-
+    @Singleton
     @Provides
     fun providesRetrofit(okHttpClient: OkHttpClient, dataConfig: DataConfig): Retrofit {
         return Retrofit.Builder()
