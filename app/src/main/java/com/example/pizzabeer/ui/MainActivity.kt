@@ -14,24 +14,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var searchBusinesses: SearchBusinesses
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        searchBusinesses(
-            BusinessFilter(
-                term = "pizza",
-                location = "111 Sutter St #1300, San Francisco, CA 94104"
-            )
-        )
-            .onErrorResumeNext {
-                Timber.e(it)
-                Flowable.empty()
-            }
-            .subscribeOn(Schedulers.io())
-            .subscribe()
     }
 }
