@@ -10,6 +10,9 @@ import com.bumptech.glide.Glide
 import com.example.pizzabeer.R
 import com.example.pizzabeer.domain.model.Business
 
+/**
+ * Takes care of loading the businesses list
+ */
 class BusinessAdapter : RecyclerView.Adapter<BusinessAdapter.BusinessViewHolder>() {
 
     private val businessList: ArrayList<Business> = arrayListOf()

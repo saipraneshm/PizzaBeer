@@ -8,6 +8,9 @@ import com.example.pizzabeer.R
 import com.example.pizzabeer.ui.models.Terms
 import com.google.android.material.button.MaterialButton
 
+/**
+ * This Adapter is responsible for loading the terms horizontal recycler view.
+ */
 class TermAdapter(private val itemClickListener: OnItemClickListener? = null) :
     RecyclerView.Adapter<TermAdapter.TermViewHolder>() {
 
