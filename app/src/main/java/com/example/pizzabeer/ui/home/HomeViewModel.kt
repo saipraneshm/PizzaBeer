@@ -7,6 +7,7 @@ import com.example.pizzabeer.domain.model.Business
 import com.example.pizzabeer.domain.model.BusinessFilter
 import com.example.pizzabeer.domain.model.Location
 import com.example.pizzabeer.domain.usecase.SearchBusinesses
+import com.example.pizzabeer.ui.BaseViewModel
 import com.example.pizzabeer.ui.models.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val searchBusinesses: SearchBusinesses) :
-    ViewModel() {
+    BaseViewModel() {
 
     private val _location = MutableLiveData<Location>()
     val locationLiveData: LiveData<Location>
@@ -27,13 +28,11 @@ class HomeViewModel @Inject constructor(private val searchBusinesses: SearchBusi
     val businessesLiveData: LiveData<NetworkResult<List<Business>>>
         get() = _businesses
 
-    private val compositeDisposable = CompositeDisposable()
-
     init {
         fetchData()
     }
 
-    private fun fetchData() {
+    override fun fetchData() {
         // Setting the Turo's office location as default location.
         _location.value = Location(
             address1 = "111 Sutter St #1300",
@@ -68,10 +67,5 @@ class HomeViewModel @Inject constructor(private val searchBusinesses: SearchBusi
             )
 
         compositeDisposable.add(d)
-    }
-
-    override fun onCleared() {
-        compositeDisposable.dispose() // this takes care of disposing of the stream once view model is destroyed.
-        super.onCleared()
     }
 }
