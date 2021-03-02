@@ -61,10 +61,11 @@ class HomeFragment : Fragment() {
     private fun handleResult(result: NetworkResult<List<Business>>) {
         when (result) {
             Loading -> {
-                // show loading progress
+                //TODO show loading progress
             }
             is NetworkError -> {
-                // hide loading progress
+                //TODO hide loading progress
+
                 // currently just showing any errors with a snackbar
                 context?.let {
                     Snackbar.make(
@@ -76,7 +77,7 @@ class HomeFragment : Fragment() {
                 }
             }
             is OK -> {
-                // hide loading progress
+                //TODO hide loading progress
                 (binding.businessesRv.adapter as BusinessAdapter).addAllBusinesses(result.data)
             }
         }
