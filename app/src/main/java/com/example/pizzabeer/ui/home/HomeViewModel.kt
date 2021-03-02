@@ -7,12 +7,12 @@ import com.example.pizzabeer.domain.model.Business
 import com.example.pizzabeer.domain.model.BusinessFilter
 import com.example.pizzabeer.domain.model.Location
 import com.example.pizzabeer.domain.usecase.SearchBusinesses
+import com.example.pizzabeer.ui.models.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,17 +23,18 @@ class HomeViewModel @Inject constructor(private val searchBusinesses: SearchBusi
     val locationLiveData: LiveData<Location>
         get() = _location
 
-    private val _businesses = MutableLiveData<List<Business>>()
-    val businessesLiveData: LiveData<List<Business>>
+    private val _businesses = MutableLiveData<NetworkResult<List<Business>>>()
+    val businessesLiveData: LiveData<NetworkResult<List<Business>>>
         get() = _businesses
 
-    private val disposable = CompositeDisposable()
+    private val compositeDisposable = CompositeDisposable()
 
     init {
         fetchData()
     }
 
     private fun fetchData() {
+        // Setting the Turo's office location as default location.
         _location.value = Location(
             address1 = "111 Sutter St #1300",
             city = "San Francisco",
@@ -41,11 +42,14 @@ class HomeViewModel @Inject constructor(private val searchBusinesses: SearchBusi
             zip_code = "94104"
         )
 
+        // loading the initial list with pizza
         _location.value?.let {
-            searchBusinesses("pizza", it)
+            searchBusinesses(Terms.PIZZA.displayValue, it)
         }
     }
 
+    // searching businesses using the term and the location.
+    // TODO: Can add support for pagination here, need to store the offset and limit in viewModel.
     fun searchBusinesses(term: String, location: Location) {
         val d = searchBusinesses(
             BusinessFilter(
@@ -53,22 +57,21 @@ class HomeViewModel @Inject constructor(private val searchBusinesses: SearchBusi
                 location = location.fullAddress
             )
         )
+            .doOnSubscribe {
+                _businesses.postValue(Loading)
+            }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {
-                _businesses.value = it.businesses
-            }
-            .onErrorResumeNext {
-                Timber.e(it)
-                Flowable.empty()
-            }
-            .subscribe()
+            .subscribeBy(
+                onNext = { _businesses.value = OK(it.businesses) },
+                onError = { _businesses.value = NetworkError(it) }
+            )
 
-        disposable.add(d)
+        compositeDisposable.add(d)
     }
 
     override fun onCleared() {
-        disposable.dispose()
+        compositeDisposable.dispose() // this takes care of disposing of the stream once view model is destroyed.
         super.onCleared()
     }
 }

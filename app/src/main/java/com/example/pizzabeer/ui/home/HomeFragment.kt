@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pizzabeer.R
 import com.example.pizzabeer.databinding.HomeFragmentBinding
-import com.example.pizzabeer.ui.models.Terms
+import com.example.pizzabeer.domain.model.Business
+import com.example.pizzabeer.ui.models.*
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -51,7 +53,31 @@ class HomeFragment : Fragment() {
             }
 
             businessesLiveData.observe(viewLifecycleOwner) {
-                (binding.businessesRv.adapter as BusinessAdapter).addAllBusinesses(it)
+                handleResult(it)
+            }
+        }
+    }
+
+    private fun handleResult(result: NetworkResult<List<Business>>) {
+        when (result) {
+            Loading -> {
+                // show loading progress
+            }
+            is NetworkError -> {
+                // hide loading progress
+                // currently just showing any errors with a snackbar
+                context?.let {
+                    Snackbar.make(
+                        it,
+                        binding.root,
+                        result.exception.localizedMessage ?: "unable to load data",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            is OK -> {
+                // hide loading progress
+                (binding.businessesRv.adapter as BusinessAdapter).addAllBusinesses(result.data)
             }
         }
     }
