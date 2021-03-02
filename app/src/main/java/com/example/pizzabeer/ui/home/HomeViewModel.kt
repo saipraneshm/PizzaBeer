@@ -33,7 +33,7 @@ class HomeViewModel @Inject constructor(private val searchBusinesses: SearchBusi
         fetchData()
     }
 
-    fun fetchData() {
+    private fun fetchData() {
         _location.value = Location(
             address1 = "111 Sutter St #1300",
             city = "San Francisco",

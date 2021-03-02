@@ -3,15 +3,21 @@ package com.example.pizzabeer.ui.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pizzabeer.R
+import com.example.pizzabeer.ui.models.Terms
+import com.google.android.material.button.MaterialButton
 
-class TermAdapter : RecyclerView.Adapter<TermAdapter.TermViewHolder>() {
+class TermAdapter(private val itemClickListener: OnItemClickListener? = null) :
+    RecyclerView.Adapter<TermAdapter.TermViewHolder>() {
 
-    private val termsList: ArrayList<String> = arrayListOf()
+    private val termsList: ArrayList<Terms> = arrayListOf()
 
-    fun addAllTerms(terms: List<String>) {
+    interface OnItemClickListener {
+        fun onTermSelected(term: Terms)
+    }
+
+    fun addAllTerms(terms: List<Terms>) {
         if (termsList.isNotEmpty()) termsList.clear()
         termsList.addAll(terms)
         notifyDataSetChanged()
@@ -30,12 +36,21 @@ class TermAdapter : RecyclerView.Adapter<TermAdapter.TermViewHolder>() {
         return termsList.size
     }
 
-    inner class TermViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TermViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
 
-        private val termsText = itemView.findViewById<TextView>(R.id.termsTv)
+        private val termsBtn = itemView.findViewById<MaterialButton>(R.id.termsBtn)
 
-        fun bindTerms(name: String) {
-            termsText.text = name
+        init {
+            termsBtn.setOnClickListener(this)
+        }
+
+        fun bindTerms(term: Terms) {
+            termsBtn.text = term.displayValue
+        }
+
+        override fun onClick(v: View?) {
+            itemClickListener?.onTermSelected(termsList[adapterPosition])
         }
     }
 }

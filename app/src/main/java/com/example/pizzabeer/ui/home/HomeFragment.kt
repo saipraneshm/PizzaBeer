@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pizzabeer.R
 import com.example.pizzabeer.databinding.HomeFragmentBinding
+import com.example.pizzabeer.ui.models.Terms
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -59,8 +60,16 @@ class HomeFragment : Fragment() {
         // initialize any adapters or set initial value.
         binding.termsRv.run {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            adapter = TermAdapter().apply {
-                addAllTerms(listOf("pizza", "beer"))
+            val clickListener = object : TermAdapter.OnItemClickListener {
+                override fun onTermSelected(term: Terms) {
+                    // using the current location and the selected term to fetch the location again.
+                    viewModel.locationLiveData.value?.let {
+                        viewModel.searchBusinesses(term.displayValue, it)
+                    }
+                }
+            }
+            adapter = TermAdapter(clickListener).apply {
+                addAllTerms(Terms.values().toList())
             }
         }
 

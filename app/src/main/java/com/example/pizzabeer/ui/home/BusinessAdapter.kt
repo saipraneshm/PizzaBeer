@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.pizzabeer.R
 import com.example.pizzabeer.domain.model.Business
 
@@ -20,7 +21,8 @@ class BusinessAdapter : RecyclerView.Adapter<BusinessAdapter.BusinessViewHolder>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusinessViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_businesses, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_businesses, parent, false)
         return BusinessViewHolder(view)
     }
 
@@ -39,8 +41,12 @@ class BusinessAdapter : RecyclerView.Adapter<BusinessAdapter.BusinessViewHolder>
 
         fun bindBusiness(business: Business) {
             businessNameTv.text = business.name
-            businessAddressTv.text = business.location.address1
-            // need to load image using glide.
+            businessAddressTv.text = business.location.fullAddress
+
+            Glide.with(itemView)
+                .load(business.image_url)
+                .centerCrop()
+                .into(businessImage)
         }
     }
 }

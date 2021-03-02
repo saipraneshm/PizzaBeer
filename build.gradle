@@ -13,6 +13,7 @@ buildscript {
         rx_kotlin_version = "3.0.1"
         timber_version = "4.7.1"
         rx_android_version = "3.0.0"
+        glide_version = "4.12.0"
     }
     repositories {
         google()
